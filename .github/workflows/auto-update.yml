@@ -1,33 +1,37 @@
 name: Auto Update Deals
+
 on:
   schedule:
-    - cron: '0 */4 * * *' # Runs automatically every 4 hours
-  workflow_dispatch:      # Lets you run it manually from your phone anytime
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   update-deals:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
-      - name: Checkout code
+      - name: Checkout Repository Files
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Initialize Python Environment
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.10'
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run script
+      - name: Execute Deal Processor Script
         run: python price_tracker.py
 
-      - name: Commit and push changes
+      - name: Commit and Push Updated Site Contents
         run: |
-          git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add dealdekho.html
-          git commit -m "Auto-update: Latest deals scraped" || echo "No changes to commit"
-          git push
+          git config --local user.name "github-actions[bot]"
+          git add index.html
+          if git diff --staged --quiet; then
+            echo "No variations in deals detected. Skipping sync."
+          else
+            git commit -m "Automated Sync: Live Deals Container Refreshed"
+            git push origin main
+          fi
+
