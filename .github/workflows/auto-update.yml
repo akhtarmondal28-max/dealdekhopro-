@@ -1,0 +1,33 @@
+name: Auto Update Deals
+on:
+  schedule:
+    - cron: '0 */4 * * *' # Runs automatically every 4 hours
+  workflow_dispatch:      # Lets you run it manually from your phone anytime
+
+jobs:
+  update-deals:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run script
+        run: python price_tracker.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add dealdekho.html
+          git commit -m "Auto-update: Latest deals scraped" || echo "No changes to commit"
+          git push
