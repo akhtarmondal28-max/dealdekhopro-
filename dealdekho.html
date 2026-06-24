@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DealDekho — India's Smartest Deal Scout</title>
+<meta name="description" content="Track any product across Amazon, Flipkart, Meesho. Get instant alerts when price drops. Never miss a deal again."/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+:root {
+  --ink: #0A0A0F;
+  --paper: #F7F4EE;
+  --signal: #FF3D00;
+  --signal-dim: rgba(255,61,0,0.1);
+  --gold: #FFB800;
+  --green: #00C48C;
+  --surface: #13131A;
+  --card: #1C1C28;
+  --border: rgba(255,255,255,0.07);
+  --muted: #666680;
+  --text: #E8E8F0;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+
+/* TICKER */
+.ticker-wrap{background:var(--signal);overflow:hidden;padding:8px 0;position:sticky;top:0;z-index:200}
+.ticker{display:flex;white-space:nowrap;animation:ticker 28s linear infinite}
+.ticker span{font-size:12px;font-weight:600;letter-spacing:.5px;color:#fff;padding:0 32px}
+.ticker span::before{content:"🔥 "}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:rgba(10,10,15,0.95);backdrop-filter:blur(12px);position:sticky;top:33px;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:32px;height:32px;background:var(--signal);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo-text{font-family:'Instrument Serif',serif;font-size:20px;font-style:italic;color:var(--paper)}
+.logo-text b{font-style:normal;color:var(--signal)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-btn{background:var(--signal);color:#fff;padding:8px 18px;border-radius:6px;text-decoration:none;font-weight:600;font-size:13px;transition:.2s;border:none;cursor:pointer}
+.nav-btn:hover{background:#e63500;transform:translateY(-1px)}
+.nav-link{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500}
+.nav-link:hover{color:var(--text)}
+
+/* HERO */
+.hero{padding:72px 24px 56px;max-width:760px;margin:0 auto;text-align:center;position:relative}
+.hero::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(255,61,0,0.12) 0%,transparent 70%);pointer-events:none}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--signal-dim);border:1px solid rgba(255,61,0,0.25);color:var(--signal);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:24px}
+.eyebrow .dot{width:6px;height:6px;background:var(--signal);border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+h1{font-family:'Instrument Serif',serif;font-size:clamp(38px,9vw,64px);line-height:1.05;letter-spacing:-1px;color:var(--paper);margin-bottom:20px}
+h1 em{font-style:italic;color:var(--signal)}
+h1 .sub{display:block;font-size:clamp(20px,5vw,32px);color:var(--muted);font-style:normal}
+
+.hero-desc{font-size:16px;color:#9999b3;max-width:520px;margin:0 auto 36px;line-height:1.7}
+
+/* DEAL TRACKER WIDGET */
+.tracker-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:600px;margin:0 auto 48px;text-align:left;position:relative;overflow:hidden}
+.tracker-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--signal),var(--gold),var(--green))}
+.tracker-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.tracker-input-row{display:flex;gap:10px;margin-bottom:14px}
+.tracker-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;transition:.2s}
+.tracker-input:focus{border-color:var(--signal);background:rgba(255,61,0,0.05)}
+.tracker-input::placeholder{color:var(--muted)}
+.tracker-btn{background:var(--signal);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:.2s;white-space:nowrap}
+.tracker-btn:hover{background:#e63500}
+.tracker-row2{display:flex;gap:10px;margin-bottom:14px}
+.tracker-select{flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:13px;outline:none;cursor:pointer}
+.tracker-select option{background:var(--card);color:var(--text)}
+.price-input{width:140px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:13px;outline:none}
+.price-input:focus{border-color:var(--gold)}
+.whatsapp-row{display:flex;gap:10px}
+.wa-input{flex:1;background:rgba(37,211,102,0.06);border:1px solid rgba(37,211,102,0.2);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:13px;outline:none}
+.wa-input:focus{border-color:#25D366}
+.wa-btn{background:#25D366;color:#fff;border:none;padding:10px 16px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;transition:.2s}
+.wa-btn:hover{background:#20bd5a}
+.tracker-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tag{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--muted);cursor:pointer;transition:.2s}
+.tag:hover{border-color:var(--signal);color:var(--signal);background:var(--signal-dim)}
+
+/* LIVE DEALS FEED */
+.deals-section{padding:48px 24px;max-width:900px;margin:0 auto}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.section-title{font-family:'Instrument Serif',serif;font-size:28px;font-style:italic;color:var(--paper)}
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,196,140,0.1);border:1px solid rgba(0,196,140,0.3);color:var(--green);padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700}
+.live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 1s infinite}
+
+.deals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+
+.deal-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:.2s;cursor:pointer;text-decoration:none;display:block;position:relative;overflow:hidden}
+.deal-card:hover{border-color:var(--signal);transform:translateY(-2px)}
+.deal-card.hot::before{content:'🔥 HOT';position:absolute;top:12px;right:12px;background:var(--signal);color:#fff;font-size:9px;font-weight:800;letter-spacing:.8px;padding:3px 8px;border-radius:10px}
+.deal-card.new::before{content:'NEW';position:absolute;top:12px;right:12px;background:var(--gold);color:var(--ink);font-size:9px;font-weight:800;letter-spacing:.8px;padding:3px 8px;border-radius:10px}
+
+.deal-platform{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.deal-name{font-size:14px;font-weight:600;color:var(--paper);margin-bottom:10px;line-height:1.4}
+.deal-prices{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.deal-now{font-family:'Instrument Serif',serif;font-size:24px;color:var(--green)}
+.deal-was{font-size:13px;color:var(--muted);text-decoration:line-through}
+.deal-drop{background:rgba(0,196,140,0.12);color:var(--green);font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px}
+.deal-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;margin-bottom:10px;overflow:hidden}
+.deal-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:2px}
+.deal-meta{display:flex;justify-content:space-between;align-items:center}
+.deal-time{font-size:10px;color:var(--muted)}
+.deal-affiliate{font-size:10px;color:var(--signal);font-weight:600}
+
+/* HOW IT WORKS */
+.how{background:var(--surface);padding:56px 24px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.how-inner{max-width:800px;margin:0 auto}
+.how-title{font-family:'Instrument Serif',serif;font-size:32px;font-style:italic;color:var(--paper);text-align:center;margin-bottom:8px}
+.how-sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:40px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px}
+.step{text-align:center;padding:24px 16px}
+.step-icon{font-size:32px;margin-bottom:12px}
+.step-num{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--signal);margin-bottom:6px}
+.step-name{font-weight:700;color:var(--paper);margin-bottom:6px;font-size:15px}
+.step-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* EARNINGS SECTION */
+.earnings{padding:56px 24px;max-width:800px;margin:0 auto}
+.earn-title{font-family:'Instrument Serif',serif;font-size:32px;font-style:italic;color:var(--paper);text-align:center;margin-bottom:8px}
+.earn-sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:36px}
+.earn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px}
+.earn-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center}
+.earn-num{font-family:'Instrument Serif',serif;font-size:36px;color:var(--gold);margin-bottom:4px}
+.earn-label{font-size:12px;color:var(--muted)}
+.earn-source{font-size:11px;color:var(--signal);font-weight:600;margin-top:6px}
+
+.affiliate-logos{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:24px}
+.aff-badge{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;color:var(--muted)}
+
+/* PLANS */
+.plans{background:var(--surface);padding:56px 24px;border-top:1px solid var(--border)}
+.plans-inner{max-width:700px;margin:0 auto}
+.plans-title{font-family:'Instrument Serif',serif;font-size:32px;font-style:italic;color:var(--paper);text-align:center;margin-bottom:36px}
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.plan{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px}
+.plan.featured{border-color:var(--signal);background:linear-gradient(135deg,#1C1C28,#20100A)}
+.plan-name{font-weight:700;color:var(--paper);margin-bottom:4px}
+.plan-price{font-family:'Instrument Serif',serif;font-size:32px;color:var(--gold);margin-bottom:2px}
+.plan-period{font-size:11px;color:var(--muted);margin-bottom:16px}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.plan-features li{font-size:12px;color:#aaa;display:flex;align-items:center;gap:8px}
+.plan-features li::before{content:'✓';color:var(--green);font-weight:700}
+.plan-btn{display:block;text-align:center;padding:10px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;transition:.2s;background:var(--signal);color:#fff}
+.plan-btn:hover{background:#e63500}
+.plan-btn.outline{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.plan-btn.outline:hover{border-color:var(--signal);color:var(--signal)}
+
+/* FOOTER */
+footer{padding:32px 24px;border-top:1px solid var(--border);text-align:center}
+.footer-logo{font-family:'Instrument Serif',serif;font-size:22px;font-style:italic;color:var(--paper);margin-bottom:8px}
+.footer-logo b{color:var(--signal);font-style:normal}
+footer p{font-size:12px;color:var(--muted);margin-bottom:16px}
+.footer-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+.footer-links a{font-size:12px;color:var(--muted);text-decoration:none}
+.footer-links a:hover{color:var(--signal)}
+.copyright{font-size:11px;color:#444}
+
+/* RESULT BOX */
+.result-box{display:none;margin-top:16px;background:rgba(0,196,140,0.08);border:1px solid rgba(0,196,140,0.25);border-radius:10px;padding:14px}
+.result-box.show{display:block}
+.result-title{font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px}
+.result-text{font-size:12px;color:#aaa;line-height:1.6}
+
+@media(max-width:480px){
+  nav{padding:12px 16px}
+  .hero{padding:48px 16px 40px}
+  .tracker-input-row{flex-direction:column}
+  .tracker-row2{flex-direction:column}
+  .whatsapp-row{flex-direction:column}
+  .deals-grid{grid-template-columns:1fr}
+  h1{font-size:34px}
+}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>iPhone 15 dropped ₹8,000 on Flipkart</span>
+    <span>Samsung TV 55" — 42% OFF on Amazon</span>
+    <span>Realme earbuds below ₹999 — limited stock</span>
+    <span>Prestige cooker at 10-year low price</span>
+    <span>JBL speaker ₹1,299 (was ₹3,499)</span>
+    <span>iPhone 15 dropped ₹8,000 on Flipkart</span>
+    <span>Samsung TV 55" — 42% OFF on Amazon</span>
+    <span>Realme earbuds below ₹999 — limited stock</span>
+    <span>Prestige cooker at 10-year low price</span>
+    <span>JBL speaker ₹1,299 (was ₹3,499)</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-mark">🎯</div>
+    <div class="logo-text">Deal<b>Dekho</b></div>
+  </div>
+  <div class="nav-right">
+    <a href="#deals" class="nav-link">Live Deals</a>
+    <a href="#track" class="nav-btn">Track a Deal</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="eyebrow"><span class="dot"></span>AI-Powered Deal Scout for India</div>
+  <h1>Never pay full price<em>again.</em><span class="sub">Track any product. Get alerted instantly.</span></h1>
+  <p class="hero-desc">Tell us what you want and your target price. DealDekho watches Amazon, Flipkart, Meesho & more 24/7 — and alerts you on WhatsApp the moment the price drops.</p>
+
+  <!-- TRACKER WIDGET -->
+  <div class="tracker-card" id="track">
+    <div class="tracker-label">⚡ Set Your Deal Alert</div>
+    <div class="tracker-input-row">
+      <input class="tracker-input" id="productInput" type="text" placeholder="e.g. Samsung M31 smartphone, Prestige cooker 5L..."/>
+      <button class="tracker-btn" onclick="addTracker()">Track It</button>
+    </div>
+    <div class="tracker-row2">
+      <select class="tracker-select" id="platformSelect">
+        <option value="all">All Platforms</option>
+        <option value="amazon">Amazon India</option>
+        <option value="flipkart">Flipkart</option>
+        <option value="meesho">Meesho</option>
+        <option value="myntra">Myntra</option>
+        <option value="croma">Croma</option>
+      </select>
+      <input class="price-input" id="priceInput" type="number" placeholder="₹ Target price"/>
+    </div>
+    <div class="whatsapp-row">
+      <input class="wa-input" id="waInput" type="tel" placeholder="WhatsApp number (10 digits)"/>
+      <button class="wa-btn" onclick="addTracker()">💬 Alert Me</button>
+    </div>
+    <div class="tracker-tags">
+      <span class="tag" onclick="fillTag('iPhone 15')">📱 iPhone 15</span>
+      <span class="tag" onclick="fillTag('Samsung TV 55 inch')">📺 Samsung TV</span>
+      <span class="tag" onclick="fillTag('Nike shoes')">👟 Nike Shoes</span>
+      <span class="tag" onclick="fillTag('Instant Pot cooker')">🍳 Cooker</span>
+      <span class="tag" onclick="fillTag('JBL speaker')">🔊 JBL Speaker</span>
+      <span class="tag" onclick="fillTag('Laptop under 40000')">💻 Laptop</span>
+    </div>
+    <div class="result-box" id="resultBox">
+      <div class="result-title">✅ Alert Set Successfully!</div>
+      <div class="result-text" id="resultText"></div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE DEALS -->
+<section class="deals-section" id="deals">
+  <div class="section-header">
+    <div class="section-title">Live deals right now</div>
+    <div class="live-badge"><span class="live-dot"></span>Updated 2 min ago</div>
+  </div>
+  <div class="deals-grid">
+
+    <a class="deal-card hot" href="https://www.amazon.in/s?k=samsung+galaxy+m31&tag=sahayak-21" target="_blank" rel="noopener">
+      <div class="deal-platform">Amazon India</div>
+      <div class="deal-name">Samsung Galaxy M31 — 6GB RAM, 64GB</div>
+      <div class="deal-prices">
+        <div class="deal-now">₹11,499</div>
+        <div class="deal-was">₹19,999</div>
+        <div class="deal-drop">↓43%</div>
+      </div>
+      <div class="deal-bar"><div class="deal-bar-fill" style="width:78%"></div></div>
+      <div class="deal-meta">
+        <div class="deal-time">⏰ 4h 23m left</div>
+        <div class="deal-affiliate">Earn ₹115 commission</div>
+      </div>
+    </a>
+
+    <a class="deal-card new" href="https://www.flipkart.com/search?q=jbl+speaker&affid=sahayak01" target="_blank" rel="noopener">
+      <div class="deal-platform">Flipkart</div>
+      <div class="deal-name">JBL Go 3 Portable Bluetooth Speaker</div>
+      <div class="deal-prices">
+        <div class="deal-now">₹1,299</div>
+        <div class="deal-was">₹3,499</div>
+        <div class="deal-drop">↓63%</div>
+      </div>
+      <div class="deal-bar"><div class="deal-bar-fill" style="width:45%"></div></div>
+      <div class="deal-meta">
+        <div class="deal-time">⏰ 11h 5m left</div>
+        <div class="deal-affiliate">Earn ₹52 commission</div>
+      </div>
+    </a>
+
+    <a class="deal-card" href="https://www.amazon.in/s?k=prestige+pressure+cooker&tag=sahayak-21" target="_blank" rel="noopener">
+      <div class="deal-platform">Amazon India</div>
+      <div class="deal-name">Prestige Deluxe Alpha Pressure Cooker 5L</div>
+      <div class="deal-prices">
+        <div class="deal-now">₹1,849</div>
+        <div class="deal-was">₹3,200</div>
+        <div class="deal-drop">↓42%</div>
+      </div>
+      <div class="deal-bar"><div class="deal-bar-fill" style="width:60%"></div></div>
+      <div class="deal-meta">
+        <div class="deal-time">⏰ 8h 12m left</div>
+        <div class="deal-affiliate">Earn ₹37 commission</div>
+      </div>
+    </a>
+
+    <a class="deal-card hot" href="https://www.amazon.in/s?k=boat+airdopes&tag=sahayak-21" target="_blank" rel="noopener">
+      <div class="deal-platform">Amazon India</div>
+      <div class="deal-name">boAt Airdopes 141 TWS Earbuds</div>
+      <div class="deal-prices">
+        <div class="deal-now">₹799</div>
+        <div class="deal-was">₹2,999</div>
+        <div class="deal-drop">↓73%</div>
+      </div>
+      <div class="deal-bar"><div class="deal-bar-fill" style="width:91%"></div></div>
+      <div class="deal-meta">
+        <div class="deal-time">⏰ 1h 44m left</div>
+        <div class="deal-affiliate">Earn ₹24 commission</div>
+      </div>
+    </a>
+
+    <a class="deal-card new" href="https://www.flipkart.com/search?q=nike+running+shoes&affid=sahayak01" target="_blank" rel="noopener">
+      <div class="deal-platform">Flipkart</div>
+      <div class="deal-name">Nike Revolution 6 Running Shoes</div>
+      <div class="deal-prices">
+        <div class="deal-now">₹2,495</div>
+        <div class="deal-was">₹4,995</div>
+        <div class="deal-drop">↓50%</div>
+      </div>
+      <div class="deal-bar"><div class="deal-bar-fill" style="width:33%"></div></div>
+      <div class="deal-meta">
+        <div class="deal-time">⏰ 22h left</div>
+        <div class="deal-affiliate">Earn ₹125 commission</div>
+      </div>
+    </a>
+
+    <a class="deal-card" href="https://www.amazon.in/s?k=instant+pot&tag=sahayak-21" target="_blank" rel="noopener">
+      <div class="deal-platform">Amazon India</div>
+      <div class="deal-name">Instant Pot Duo 5.7L Electric Pressure Cooker</div>
+      <div class="deal-prices">
+        <div class="deal-now">₹6,499</div>
+        <div class="deal-was">₹12,995</div>
+        <div class="deal-drop">↓50%</div>
+      </div>
+      <div class="deal-bar"><div class="deal-bar-fill" style="width:55%"></div></div>
+      <div class="deal-meta">
+        <div class="deal-time">⏰ 6h 30m left</div>
+        <div class="deal-affiliate">Earn ₹195 commission</div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="how-inner">
+    <div class="how-title">Set it. Forget it. Save big.</div>
+    <div class="how-sub">DealDekho works silently in the background so you don't have to.</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">🎯</div>
+        <div class="step-num">Step 01</div>
+        <div class="step-name">Tell us what you want</div>
+        <div class="step-desc">Enter any product and your target price. Be as specific or as broad as you like.</div>
+      </div>
+      <div class="step">
+        <div class="step-icon">🤖</div>
+        <div class="step-num">Step 02</div>
+        <div class="step-name">AI watches all platforms</div>
+        <div class="step-desc">Our engine scans Amazon, Flipkart, Meesho and more every 15 minutes.</div>
+      </div>
+      <div class="step">
+        <div class="step-icon">💬</div>
+        <div class="step-num">Step 03</div>
+        <div class="step-name">WhatsApp alert arrives</div>
+        <div class="step-desc">You get an instant WhatsApp message with the deal link the moment price drops.</div>
+      </div>
+      <div class="step">
+        <div class="step-icon">💰</div>
+        <div class="step-num">Step 04</div>
+        <div class="step-name">You save. We earn.</div>
+        <div class="step-desc">Every link carries an affiliate tag. You pay nothing extra. We earn a commission.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EARNINGS -->
+<section class="earnings">
+  <div class="earn-title">How DealDekho makes money</div>
+  <div class="earn-sub">Every deal link has an affiliate tag. Zero cost to users. Pure passive income.</div>
+  <div class="earn-grid">
+    <div class="earn-card">
+      <div class="earn-num">₹2–12%</div>
+      <div class="earn-label">Commission per sale</div>
+      <div class="earn-source">Amazon Associates</div>
+    </div>
+    <div class="earn-card">
+      <div class="earn-num">₹5–15%</div>
+      <div class="earn-label">Commission per sale</div>
+      <div class="earn-source">EarnKaro / Cuelinks</div>
+    </div>
+    <div class="earn-card">
+      <div class="earn-num">₹50k+</div>
+      <div class="earn-label">Monthly potential</div>
+      <div class="earn-source">At 10,000 active users</div>
+    </div>
+    <div class="earn-card">
+      <div class="earn-num">₹0</div>
+      <div class="earn-label">Cost to run</div>
+      <div class="earn-source">Free tier infrastructure</div>
+    </div>
+  </div>
+  <div class="affiliate-logos">
+    <div class="aff-badge">Amazon Associates</div>
+    <div class="aff-badge">EarnKaro</div>
+    <div class="aff-badge">Cuelinks</div>
+    <div class="aff-badge">Flipkart Affiliate</div>
+    <div class="aff-badge">vCommission</div>
+  </div>
+</section>
+
+<!-- PLANS -->
+<section class="plans">
+  <div class="plans-inner">
+    <div class="plans-title">Simple, honest pricing</div>
+    <div class="plans-grid">
+      <div class="plan">
+        <div class="plan-name">Free Scout</div>
+        <div class="plan-price">₹0</div>
+        <div class="plan-period">forever free</div>
+        <ul class="plan-features">
+          <li>3 active trackers</li>
+          <li>WhatsApp alerts</li>
+          <li>Amazon + Flipkart</li>
+          <li>Daily price check</li>
+        </ul>
+        <a href="#track" class="plan-btn outline">Start Free</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-name">Pro Hunter</div>
+        <div class="plan-price">₹99</div>
+        <div class="plan-period">per month</div>
+        <ul class="plan-features">
+          <li>Unlimited trackers</li>
+          <li>Instant alerts (15 min)</li>
+          <li>All 8 platforms</li>
+          <li>Price history charts</li>
+          <li>Coupon auto-apply</li>
+          <li>Priority WhatsApp</li>
+        </ul>
+        <a href="https://wa.me/917430912146?text=DealDekho+Pro+subscription" class="plan-btn" target="_blank">Get Pro — ₹99/mo</a>
+      </div>
+      <div class="plan">
+        <div class="plan-name">Reseller Pack</div>
+        <div class="plan-price">₹249</div>
+        <div class="plan-period">per month</div>
+        <ul class="plan-features">
+          <li>Everything in Pro</li>
+          <li>Bulk alert broadcast</li>
+          <li>Your own referral link</li>
+          <li>Earn 30% per referral</li>
+        </ul>
+        <a href="https://wa.me/917430912146?text=DealDekho+Reseller" class="plan-btn outline" target="_blank">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Deal<b>Dekho</b></div>
+  <p>India's smartest deal alert engine. Built by Sahayak.</p>
+  <div class="footer-links">
+    <a href="#track">Track a Deal</a>
+    <a href="#deals">Live Deals</a>
+    <a href="https://sahayak-pro.netlify.app">Sahayak Store</a>
+    <a href="https://wa.me/917430912146">WhatsApp</a>
+  </div>
+  <div class="copyright">© 2026 Sahayak / DealDekho — Affiliate links earn us a commission at no extra cost to you.</div>
+</footer>
+
+<script>
+function fillTag(text) {
+  document.getElementById('productInput').value = text;
+  document.getElementById('productInput').focus();
+}
+
+function addTracker() {
+  const product = document.getElementById('productInput').value.trim();
+  const price = document.getElementById('priceInput').value.trim();
+  const wa = document.getElementById('waInput').value.trim();
+  const platform = document.getElementById('platformSelect').value;
+  const box = document.getElementById('resultBox');
+  const text = document.getElementById('resultText');
+
+  if (!product) {
+    document.getElementById('productInput').focus();
+    return;
+  }
+
+  const platformName = platform === 'all' ? 'all platforms' : platform;
+  const priceText = price ? `below ₹${parseInt(price).toLocaleString('en-IN')}` : 'at any price drop';
+  const waText = wa ? `We'll alert +91-${wa} on WhatsApp.` : 'Add your WhatsApp to get instant alerts.';
+
+  text.innerHTML = `
+    Tracking <strong style="color:#E8E8F0">${product}</strong> on <strong style="color:#E8E8F0">${platformName}</strong> ${priceText}.<br>
+    ${waText}<br><br>
+    <span style="color:#FFB800">💡 Share DealDekho with friends and earn ₹50 per referral!</span>
+  `;
+  box.classList.add('show');
+
+  // WhatsApp message to owner
+  if (wa) {
+    const msg = encodeURIComponent(`🎯 New DealDekho Alert Request!\n\nProduct: ${product}\nTarget Price: ${price ? '₹'+price : 'Any drop'}\nPlatform: ${platformName}\nUser WhatsApp: +91${wa}`);
+    setTimeout(() => {
+      window.open(`https://wa.me/917430912146?text=${msg}`, '_blank');
+    }, 800);
+  }
+}
+
+// Countdown timers
+function updateTimers() {
+  document.querySelectorAll('.deal-time').forEach(el => {
+    const text = el.textContent;
+    const match = text.match(/(\d+)h\s*(\d+)?m?/);
+    if (match) {
+      let h = parseInt(match[1]);
+      let m = match[2] ? parseInt(match[2]) : 0;
+      if (m > 0) m--;
+      else if (h > 0) { h--; m = 59; }
+      el.textContent = m > 0 ? `⏰ ${h}h ${m}m left` : `⏰ ${h}h left`;
+    }
+  });
+}
+setInterval(updateTimers, 60000);
+</script>
+</body>
+</html>
