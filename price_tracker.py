@@ -1,15 +1,10 @@
 import os
 import re
 
-
-
-# PASTE IT HERE: Securely grab affiliate IDs from GitHub environment variables
+# Securely grab affiliate IDs from GitHub environment variables
 AMAZON_ASSOCIATE_TAG = os.getenv("AMAZON_TAG", "premiumhea0ac-21")
-FLIPKART_AFFILIATE_ID = os.getenv("akhtarmon", "")
-EARNKARO_PRO_ID = os.getenv("EARNKARO_5391028", "")
-
-def update_deal_page():
-    html_file = "index.html"
+FLIPKART_AFFILIATE_ID = os.getenv("FLIPKART_ID", "akhtarmon")
+EARNKARO_PRO_ID = os.getenv("EARNKARO_ID", "5391028")
 
 def update_deal_page():
     html_file = "index.html"
@@ -36,7 +31,6 @@ def update_deal_page():
     cards_html = ""
     for deal in deals:
         cards_html += f"""
-            <!-- Dynamic Deal Card Start -->
             <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex gap-4">
                 <div class="w-24 h-24 bg-gray-50 rounded-xl flex items-center justify-center font-bold text-gray-400 shrink-0">🛍️</div>
                 <div class="flex flex-col justify-between w-full">
@@ -53,8 +47,7 @@ def update_deal_page():
                     </div>
                 </div>
             </div>
-            <!-- Dynamic Deal Card End -->
-        """
+            """
 
     # 3. Inject the newly generated deals seamlessly into your index.html
     if os.path.exists(html_file):
@@ -74,3 +67,4 @@ def update_deal_page():
 
 if __name__ == "__main__":
     update_deal_page()
+
