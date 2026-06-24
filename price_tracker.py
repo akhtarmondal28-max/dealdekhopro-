@@ -1,34 +1,70 @@
-5import os
+import os
 import re
 import sys
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 
-# Securely grab affiliate IDs from GitHub environment variables
+# Securely grab affiliate IDs from GitHub environment variables or use fallbacks
 AMAZON_ASSOCIATE_TAG = os.getenv("AMAZON_TAG", "premiumhea0ac-21")
 FLIPKART_AFFILIATE_ID = os.getenv("FLIPKART_ID", "akhtarmon")
 EARNKARO_PRO_ID = os.getenv("EARNKARO_ID", "5391028")
 
+def generate_affiliate_link(url, platform):
+    """Dynamically converts raw product URLs into monetized affiliate tracking links."""
+    if not url or url == "#":
+        return "#"
+        
+    try:
+        parsed_url = urlparse(url)
+        
+        if platform.lower() == "amazon":
+            query_params = parse_qs(parsed_url.query)
+            query_params['tag'] = [AMAZON_ASSOCIATE_TAG]
+            new_query = urlencode(query_params, doseq=True)
+            return urlunparse(parsed_url._replace(query=new_query))
+            
+        elif platform.lower() == "flipkart":
+            query_params = parse_qs(parsed_url.query)
+            query_params['affid'] = [FLIPKART_AFFILIATE_ID]
+            new_query = urlencode(query_params, doseq=True)
+            return urlunparse(parsed_url._replace(query=new_query))
+            
+        elif platform.lower() == "earnkaro":
+            encoded_target = urlencode({"url": url})
+            return f"https://earnkaro.com/stores/sharing-profit-link?dl={encoded_target}&r={EARNKARO_PRO_ID}"
+            
+    except Exception as e:
+        print(f"Link optimization skipped for {url}. Error: {e}")
+        
+    return url
+
 def update_deal_page():
     html_file = "index.html"
     
+    # 1. Define your dynamic deal data (Just paste raw links here!)
     deals = [
         {
             "title": "Exclusive Tech Deal - High Speed Automation Workflow Setup",
             "price": "₹99",
             "original_price": "₹999",
             "tag": "Loot Deal",
-            "link": "#"
+            "platform": "amazon",
+            "raw_url": "https://www.amazon.in/dp/B0CHX7N36X"
         },
         {
             "title": "Premium Digital Micro-Product Accelerator Kit",
             "price": "₹149",
             "original_price": "₹1,499",
             "tag": "Top Pick",
-            "link": "#"
+            "platform": "earnkaro",
+            "raw_url": "https://www.ajio.com/s/example-product"
         }
     ]
     
+    # 2. Build out the structured HTML layout cards dynamically
     cards_html = ""
     for deal in deals:
+        affiliate_link = generate_affiliate_link(deal["raw_url"], deal["platform"])
+        
         cards_html += f"""
         <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex gap-4">
             <div class="w-24 h-24 bg-gray-50 rounded-xl flex items-center justify-center font-bold text-gray-400 shrink-0">🛍️</div>
@@ -42,12 +78,13 @@ def update_deal_page():
                         <span class="text-base font-bold text-gray-900">{deal['price']}</span>
                         <span class="text-xs text-gray-400 line-through ml-1">{deal['original_price']}</span>
                     </div>
-                    <a href="{deal['link']}" class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-sm">Buy Now</a>
+                    <a href="{affiliate_link}" target="_blank" rel="noopener noreferrer" class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-sm">Buy Now</a>
                 </div>
             </div>
         </div>
         """
 
+    # 3. Inject the newly generated deals seamlessly into your index.html
     if os.path.exists(html_file):
         with open(html_file, "r", encoding="utf-8") as f:
             content = f.read()
@@ -59,7 +96,7 @@ def update_deal_page():
             
             with open(html_file, "w", encoding="utf-8") as f:
                 f.write(updated_content)
-            print("Success: Live Deal Container Updated Atomically!")
+            print("Success: Live Deals Parsed with Custom Affiliate Parameters Automatically!")
         else:
             print("Error: Could not find target id='deals-container' pattern wrapper.")
             sys.exit(1)
@@ -69,3 +106,4 @@ def update_deal_page():
 
 if __name__ == "__main__":
     update_deal_page()
+
