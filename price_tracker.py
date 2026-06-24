@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 
 # Securely grab affiliate IDs from GitHub environment variables
 AMAZON_ASSOCIATE_TAG = os.getenv("AMAZON_TAG", "premiumhea0ac-21")
@@ -9,7 +10,6 @@ EARNKARO_PRO_ID = os.getenv("EARNKARO_ID", "5391028")
 def update_deal_page():
     html_file = "index.html"
     
-    # 1. Define your dynamic deal data
     deals = [
         {
             "title": "Exclusive Tech Deal - High Speed Automation Workflow Setup",
@@ -27,7 +27,6 @@ def update_deal_page():
         }
     ]
     
-    # 2. Build out the structured HTML layout cards dynamically
     cards_html = ""
     for deal in deals:
         cards_html += f"""
@@ -49,12 +48,10 @@ def update_deal_page():
         </div>
         """
 
-    # 3. Inject the newly generated deals seamlessly into your index.html
     if os.path.exists(html_file):
         with open(html_file, "r", encoding="utf-8") as f:
             content = f.read()
             
-        # Target ONLY the inner content of your specific deals container id wrapper
         pattern = r'(<div id="deals-container"[^>]*>)(.*?)(</div>)'
         
         if re.search(pattern, content, flags=re.DOTALL):
@@ -64,11 +61,11 @@ def update_deal_page():
                 f.write(updated_content)
             print("Success: Live Deal Container Updated Atomically!")
         else:
-            print("Error: Could not find target <div id='deals-container'> in your index.html structure.")
-            exit(1)
+            print("Error: Could not find target id='deals-container' pattern wrapper.")
+            sys.exit(1)
     else:
-        print(f"Error: {html_file} not found in current execution path.")
-        exit(1)
+        print(f"Error: {html_file} not found.")
+        sys.exit(1)
 
 if __name__ == "__main__":
     update_deal_page()
