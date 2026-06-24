@@ -1,6 +1,16 @@
 import os
 import re
 
+
+
+# PASTE IT HERE: Securely grab affiliate IDs from GitHub environment variables
+AMAZON_ASSOCIATE_TAG = os.getenv("AMAZON_TAG", "premiumhea0ac-21")
+FLIPKART_AFFILIATE_ID = os.getenv("akhtarmon", "")
+EARNKARO_PRO_ID = os.getenv("EARNKARO_5391028", "")
+
+def update_deal_page():
+    html_file = "index.html"
+
 def update_deal_page():
     html_file = "index.html"
     
