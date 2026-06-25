@@ -1,3 +1,4 @@
+
 import os
 import re
 import sys
@@ -106,4 +107,3 @@ def update_deal_page():
 
 if __name__ == "__main__":
     update_deal_page()
-
