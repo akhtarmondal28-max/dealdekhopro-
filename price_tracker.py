@@ -44,12 +44,12 @@ def update_deal_page():
     # 1. Define your dynamic deal data (Just paste raw links here!)
     deals = [
         {
-            "title": "Exclusive Tech Deal - High Speed Automation Workflow Setup",
-            "price": "₹99",
-            "original_price": "₹999",
+            "title": "Xiaomi Power Bank 4i 20000mAh 33W Super Fast Charging PD |Smart 12 Layer Protection|Type C Input & Output|Triple Output Ports|Supports Android,Apple, Tablets, Earbuds,Watch(MI Powerbank),Black",
+            "price": "₹2299",
+            "original_price": "₹3999",
             "tag": "Loot Deal",
             "platform": "amazon",
-            "raw_url": "https://amzn.to/4aPxBa6"
+            "raw_url": "https://amzn.in/d/0gr0V5WH"
         },
         {
             "title": "Premium Digital Micro-Product Accelerator Kit",
