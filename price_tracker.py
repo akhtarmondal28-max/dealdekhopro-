@@ -105,5 +105,3 @@ def update_deal_page():
         print(f"Error: {html_file} not found.")
         sys.exit(1)
 
-if __name__ == "__main__":
-    update_deal_page()
