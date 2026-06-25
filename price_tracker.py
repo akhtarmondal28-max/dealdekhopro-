@@ -48,7 +48,7 @@ def update_deal_page():
             "original_price": "₹999",
             "tag": "Loot Deal",
             "platform": "amazon",
-            "raw_url": "https://www.amazon.in/dp/B0CHX7N36X"
+            "raw_url": "https://amzn.to/4aPxBa6"
         },
         {
             "title": "Premium Digital Micro-Product Accelerator Kit",
